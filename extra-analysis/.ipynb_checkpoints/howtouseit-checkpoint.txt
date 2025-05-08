@@ -1,0 +1,29 @@
+python extra_analysis.py [OPTIONS]
+
+OPTIONS:
+    --model-location=LOCATION (default: ../results/classification/final_model_1/model.pt)
+    --only-embeddings
+    Utilizza solo l'encoder (quindi solo IgBert) e calcola solo gli embedding.
+    Se impostato su false usa l'intero modello (encoder + classification head) e restituisce i logits della class positiva.
+    --dataset-location=LOCATION (default: sample.csv)
+    --extra-name=NAME (default='')
+    Stringa extra che verrà aggiunta al file restituito dal modulo
+
+Il programma prende in input il modello e il dataset.
+
+Il dataset è formato da N righe, ogni riga è data dalla tupla ID1,ID2,VH,VL,LABEL.
+ID1 e ID2 possono essere uguali. LABEL può essere 0 o 1, il suo valore sarà ignorato.
+
+Se è specificato che deve usare solo l'encoder (è stato passato il flag --only-embeddings) allora 
+il programma calcola una matrice Nx1024 le cui righe sono l'embedding della coppia <VH, VL>.
+Se è specificato che deve usare encoder+classification_head (non è stato passato il flag --only-embeddings)
+il programma calcola un vettore di dimensione N le cui componenti sono le logits della classe positiva.
+
+Se viene specificato --only-embeddings la matrice sarà salvata col nome embeddings.pt,
+altrimenti logits.py
+
+Se viene specificato --extra-name=NAME il nome sarà dato da [embedding|logits]-NAME.pt
+
+Per caricare il file generato usare torch.load(NOME_FILE, weights_only=True)
+
+Per comodità è anche possibile usare il notebook al posto della riga di comando.
