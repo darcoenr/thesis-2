@@ -1,0 +1,42 @@
+Number of unique heavy germlines:   19
+Number of unique light germlines:   41
+Number of possible pairs:          779
+Number of never seen pairs:        436 (55.97%)
+Colors are in logaritmic scale.
+Number of paired sequences: 1743308
+Number of unique heavy:     1723144
+Number of unique light:     738540
+Number of unique pairs:     1743308
+Every heavy has an unique germline
+Every light has an unique germline
+Every pair has an unique germline
+Most frequent
+Number of random pairing:        1743308
+Number of unique random pairing: 1742849
+Number of random pairing with zero germline: 1922
+Number of germline pairing:        1743308
+Number of unique germline pairing: 1549903 (88.91%)
+Number of zero germline pairs:      436
+Number of different germline pairs: 360
+Colors are in logaritmic scale.
+Number of clusters:                      1638000
+Number of clusters with unique sequence: 1579089
+Biggest cluster:                            127
+There are clusters whose elements have different germlines.
+Number of clusters:                      1700274
+Number of clusters with unique sequence: 1659369
+Biggest cluster:                             12
+There are clusters whose elements have different germlines.
+Number of clusters:                      1422532
+Number of clusters with unique sequence: 1276717
+Biggest cluster:                           1130
+There are clusters whose elements have different germlines.
+Train size:      2178777 (871992 pos, 1306785, neg)
+Validation size: 1082135 (435822 pos, 646313, neg)
+Test size:       1084124 (435494 pos, 648630, neg)
+Number of distinct germlines in train:     641
+Number of distinct germlines in validaton: 578
+Number of distinct germlines in test:      581
+Number of germline pairs unique to training: 64
+Number of germline pairs unique to valtest:  62
+Number of sequences whose germline is unique to training: 121

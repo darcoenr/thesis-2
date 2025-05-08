@@ -1,0 +1,17 @@
+python read_raw.py ../../datasets/OAS #--subsample=50
+python generate_fasta.py ../datasets/sequences.csv -o ../datasets/sequences.fasta
+source cluster.sh ../datasets sequences.fasta sequences
+rm ../datasets/sequences.fasta
+
+python germline_pairing.py ../datasets/sequences.csv --alpha=1000
+python generate_fasta.py ../datasets/negative_samples_germline.csv -o ../datasets/germline.fasta
+source cluster.sh ../datasets germline.fasta germline
+rm ../datasets/germline.fasta
+
+python random_pairing.py ../datasets/sequences.csv
+python generate_fasta.py ../datasets/negative_samples_random.csv -o ../datasets/random.fasta
+source cluster.sh ../datasets random.fasta random
+rm ../datasets/random.fasta
+
+python split.py ../datasets/sequences.tsv ../datasets/germline.tsv ../datasets/sequences.csv ../datasets/negative_samples_germline.csv --additional-name=germline
+python split.py ../datasets/sequences.tsv ../datasets/random.tsv ../datasets/sequences.csv ../datasets/negative_samples_random.csv --additional-name=random
