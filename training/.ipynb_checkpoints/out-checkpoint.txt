@@ -1,0 +1,8 @@
+Error in cpuinfo: prctl(PR_SVE_GET_VL) failed
+Traceback (most recent call last):
+  File "<frozen runpy>", line 189, in _run_module_as_main
+  File "<frozen runpy>", line 112, in _get_module_details
+  File "/disk1/e.darco/thesis/training/grid_search_adam.py", line 26, in <module>
+    for i, (lr_sched_name, start_factor, end_factor, total_iters) in enumerate(combinations):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 4, got 2)
