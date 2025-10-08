@@ -230,8 +230,6 @@ def retrieve_lr_scheduler(lr_scheduler_name, *, optimizer,
         }
         return sched, sched_hyperpar
 
-    
-
 def load_model(model_name, *, checkpoint, state_dict):
     if model_name == 'average':
         number_of_layers = len(state_dict) // 2

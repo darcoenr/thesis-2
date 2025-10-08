@@ -6,25 +6,6 @@ from transformers import BertModel
 class ClassificationHead(nn.Module):
     def __init__(self, input_size, number_of_layers, layer_size):
         super().__init__()
-        #self.network = nn.Sequential(
-        #    nn.Linear(input_size, 256),
-        #    nn.Tanh(),
-        #    nn.Linear(256, 64),
-        #    nn.Tanh(),
-        #    nn.Linear(64, 16),
-        #    nn.Tanh(),
-        #    nn.Linear(16, 4),
-        #    nn.Tanh(),
-        #    nn.Linear(4, 2)
-        #)
-        #self.network = nn.Sequential(
-        #    nn.Linear(input_size, 1024),
-        #    nn.Tanh(),
-        #    nn.Linear(1024, 1024),
-        #    nn.Tanh(),
-        #    nn.Linear(1024, 2),
-        #)
-
         layers = []
         prev_size = input_size
         for _ in range(number_of_layers - 1):
@@ -77,39 +58,4 @@ class ClassificationFromAveraging(nn.Module):
         embeddings = self.encoder(input_ids, attention_mask, special_tokens_mask)
         mean = self.mean(embeddings, special_tokens_mask)
         logits = self.classification_head(mean)
-        return logits
-
-#class ClassificationFromAveraging(nn.Module):
-#    def __init__(self, checkpoint):
-#        super().__init__()
-#        # Download the specified BERT model.
-#        self.bert_model = BertModel.from_pretrained(checkpoint, add_pooling_layer=False)
-#        # Freeze the model (disable gradient computation)
-#        for p in self.bert_model.parameters():
-#            p.requires_grad = False
-#        hidden_size = 1024
-#        self.mean = AverageEmbedding()
-#        self.classification_head = ClassificationHead(hidden_size)
-#    def forward(self, input_ids, attention_mask, special_tokens_mask):
-#        bert_output = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)
-#        embeddings = bert_output.last_hidden_state
-#        mean = self.mean(embeddings, special_tokens_mask)
-#        logits = self.classification_head(mean)
-#        return logits
-
-class ClassificationFromPooling(nn.Module):
-    def __init__(self, checkpoint):
-        super().__init__()
-        # Download the specified BERT model.
-        self.bert_model = BertModel.from_pretrained(checkpoint, add_pooling_layer=True)
-        # Freeze the model (disable gradient computation)
-        for name, p in self.bert_model.named_parameters():
-            if 'pooling' in name: continue
-            p.requires_grad = False
-        hidden_size = 1024
-        self.classification_head = ClassificationHead(hidden_size)
-    def forward(self, input_ids, attention_mask, **kwargs):
-        bert_output = self.bert_model(input_ids=input_ids, attention_mask=attention_mask)
-        embeddings = bert_output.pooler_output
-        logits = self.classification_head(embeddings)
         return logits
