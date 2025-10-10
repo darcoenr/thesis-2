@@ -11,7 +11,7 @@ from tqdm import tqdm
 from collections import defaultdict
 from typing import Callable
 
-import models
+import core.models as models
 
 class AbDataset(Dataset):
     def __init__(self, df):
