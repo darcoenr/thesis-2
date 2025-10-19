@@ -7,21 +7,21 @@ Data is available [here](https://zenodo.org/records/17389656?token=eyJhbGciOiJIU
 
 Directory structure:
 
-- **`all_datasets/`** — main folder containing all dataset versions  
-  - **`dataset_old/`** — legacy dataset directory  
-    - **`classificator/`** — data grouped by classification type  
-      - `germline_all/` — contains germline sequences (complete set)  
-      - `germline_v/` — variant germline sequences  
-      - `random/` — randomized samples for control or comparison  
-    - **`clustering/`** — clustering results and related data  
+- **`all_datasets/`**
+  - **`dataset_old/`** 
+    - **`classificator/`** — data used to train the classifiers 
+      - `germline_all/`
+      - `germline_v/`
+      - `random/`
+    - **`clustering/`** — result of the clustering operation 
       - `sequences.tsv` — clustered sequence data in tabular format  
-    - **`fasta/`** — FASTA files with raw sequence data  
+    - **`fasta/`** — directory used to store FASTA sequences temporarily
     - **`sequences/`** — processed sequence datasets  
       - `sequences.csv` — main dataset of all sequences  
       - `representative.csv` — representative subset of sequences  
-      - `train.csv`, `val.csv`, `test.csv` — training, validation, and testing splits  
+      - `train.csv`, `val.csv`, `test.csv` — training, validation, and testing germline-aware splits
     - **`test/`** — evaluation datasets for validation and testing  
-      - `val.csv`, `test.csv` — validation and test files used in model evaluation
+      - `val.csv`, `test.csv` — validation and test files used for the test procedure
 
 # Data processing
 
