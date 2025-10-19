@@ -10,9 +10,9 @@ Directory structure:
 - **`all_datasets/`**
   - **`dataset_old/`** 
     - **`classificator/`** — data used to train the classifiers 
-      - `germline_all/`
-      - `germline_v/`
-      - `random/`
+      - ** `germline_all/` **
+      - ** `germline_v/` **
+      - ** `random/` **
     - **`clustering/`** — result of the clustering operation 
       - `sequences.tsv` — clustered sequence data in tabular format  
     - **`fasta/`** — directory used to store FASTA sequences temporarily
@@ -22,6 +22,8 @@ Directory structure:
       - `train.csv`, `val.csv`, `test.csv` — training, validation, and testing germline-aware splits
     - **`test/`** — evaluation datasets for validation and testing  
       - `val.csv`, `test.csv` — validation and test files used for the test procedure
+
+Each of the ** `germline_all/` **, ** `germline_v/` ** and ** `random/` **
 
 # Data processing
 
