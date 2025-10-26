@@ -1,3 +1,5 @@
+import os
+import pathlib
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -82,6 +84,11 @@ class TablePrinter:
                 print(f"{s:^{self.spaces_for_each_metric}}|", end='')
         print()
 
+def create_dir_if_not_exists(path):
+    if not pathlib.Path(path).exists():
+        print('Creating the directory {}'.format(path))
+        os.mkdir(path)
+
 def get_dataset(location, *, subsample=None, frac=None, shuffle=False, seed=0):
     """Retrieve the dataset or a subsample of it."""
 
@@ -106,7 +113,7 @@ def get_dataset(location, *, subsample=None, frac=None, shuffle=False, seed=0):
         print('Sampled a subset of size {}'.format(len(df)))
 
     if shuffle:
-        df = df.sample(len(df))
+        df = df.sample(len(df), random_state=seed)
     
     dataset_hyperpar['shuffled'] = shuffle
     dataset_hyperpar['frac'] = frac

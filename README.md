@@ -23,7 +23,7 @@ Directory structure:
     - **`test/`** — evaluation datasets for validation and testing  
       - `val.csv`, `test.csv` — validation and test files used for the test procedure
 
-Each of **`germline_all`**, **`germline_v`** and **`random`** contains the directories **`train`**, **`val`** and **`test`** used to train, validate and test each classifier.
+Each of **`germline_all`**, **`germline_v`** and **`random`** contains the directories **`train`**, **`val`** and **`test`** used to train, validate and test each of the classifiers. For the **`germline_all`** and **`germline_v`** directories, additional files with germline information are included.
 
 # Data processing
 

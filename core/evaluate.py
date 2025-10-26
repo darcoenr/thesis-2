@@ -40,24 +40,30 @@ def generate_parser(parser):
 
     return parser
 
-def evaluate(name,
-             val_data, batch_size,
-             shuffle, subsample, frac, seed,
+def evaluate(model_location,
+             data_location,
+             results_location,
+             batch_size, shuffle, subsample, frac, seed,
              model_name, model_checkpoint, tokenizer_checkpoint, eval_batches,
              save, out):
     
-    location = r'../results/classification/{}/'.format(name)
-    print('Location: {}'.format(location))
+    #location = r'../results/classification/{}/'.format(name)
+    #ocation = re
+    
+    # Create results directory
+    utils.create_dir_if_not_exists(results_location)
+    print('Results location: {}'.format(results_location))
 
     # Get the data
     print('Retrieving the dataset...')
-    val_ds, hyperpar = utils.get_dataset(val_data, subsample=subsample, frac=frac, seed=seed)
+    val_ds, hyperpar = utils.get_dataset(data_location, 
+                                         shuffle=shuffle, subsample=subsample, frac=frac, seed=seed)
     val_dl = DataLoader(val_ds, batch_size=batch_size)
 
     # Load the model
     print('Load the model...')
-    state_dict = torch.load('{}/model.pt'.format(location), weights_only=True)
-    
+    state_dict = torch.load('{}'.format(model_location), weights_only=True,
+                            map_location='cuda' if torch.cuda.is_available() else 'cpu')
     model = utils.load_model(model_name, checkpoint=model_checkpoint, state_dict=state_dict)
 
     # Get the tokenizer
@@ -67,15 +73,15 @@ def evaluate(name,
 
     criterion = nn.CrossEntropyLoss()
 
-    results_eval, results_df = utils.evaluate(model, criterion, val_dl, 
-                                              eval_batches=eval_batches,
-                                              metrics={'accuracy': accuracy_score},
-                                              tokenizer=tokenizer)
-    if save:
-        with open('{}/hyperpar_{}.json'.format(location, out), 'w') as f:
-            json.dump(hyperpar, f)
-        pd.DataFrame(results_eval).to_csv('{}/{}.csv'.format(location, out))
-        results_df.to_csv('{}/{}_classification.csv'.format(location, out))
+    #results_eval, results_df = utils.evaluate(model, criterion, val_dl, 
+    #                                          eval_batches=eval_batches,
+    #                                          metrics={'accuracy': accuracy_score},
+    #                                          tokenizer=tokenizer)
+    #if save:
+    #    with open('{}/hyperpar_{}.json'.format(location, out), 'w') as f:
+    #        json.dump(hyperpar, f)
+    #    pd.DataFrame(results_eval).to_csv('{}/{}.csv'.format(location, out))
+    #    results_df.to_csv('{}/{}_classification.csv'.format(location, out))
 
 # ==========
 
@@ -102,40 +108,6 @@ def main():
              val_data, subsample, batch_size,
              model_name, model_checkpoint, tokenizer_checkpoint, eval_batches,
              save, out)
-
-"""
-    location = r'../results/classification/{}/'.format(args.name)
-    print('Location: {}'.format(location))
-
-    # Get the data
-    print('Retrieving the dataset...')
-    val_ds, hyperpar = utils.get_dataset(args.val_data, subsample=args.subsample)
-    val_dl = DataLoader(val_ds, batch_size=args.batch_size)
-
-    # Load the model
-    print('Load the model...')
-    state_dict = torch.load(
-        '{}/model.pt'.format(location), weights_only=True)
-    model = utils.load_model(args.model_name, 
-                             checkpoint=args.model_checkpoint, state_dict=state_dict)
-
-    # Get the tokenizer
-    print('Retrieve the tokenizer...')
-    if args.tokenizer_checkpoint is None: args.tokenizer_checkpoint = args.model_checkpoint
-    tokenizer = utils.retrieve_tokenizer(args.tokenizer_checkpoint)
-
-    criterion = nn.CrossEntropyLoss()
-
-    results_eval, results_df = utils.evaluate(model, criterion, val_dl, 
-                                              eval_batches=args.eval_batches,
-                                              metrics={'accuracy': accuracy_score},
-                                              tokenizer=tokenizer)
-    if args.save:
-        with open('{}/hyperpar_{}.json'.format(location, args.out), 'w') as f:
-            json.dump(hyperpar, f)
-        pd.DataFrame(results_eval).to_csv('{}/{}.csv'.format(location, args.out))
-        results_df.to_csv('{}/{}_classification.csv'.format(location, args.out))
-"""
 
 if __name__ == '__main__':
     main()
