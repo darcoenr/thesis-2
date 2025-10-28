@@ -46,10 +46,7 @@ def evaluate(model_location,
              batch_size, shuffle, subsample, frac, seed,
              model_name, model_checkpoint, tokenizer_checkpoint, eval_batches,
              save, out):
-    
-    #location = r'../results/classification/{}/'.format(name)
-    #ocation = re
-    
+        
     # Create results directory
     utils.create_dir_if_not_exists(results_location)
     print('Results location: {}'.format(results_location))
@@ -71,17 +68,14 @@ def evaluate(model_location,
     if tokenizer_checkpoint is None: tokenizer_checkpoint = model_checkpoint
     tokenizer = utils.retrieve_tokenizer(tokenizer_checkpoint)
 
-    criterion = nn.CrossEntropyLoss()
-
-    results_eval, results_df = utils.evaluate(model, criterion, val_dl, 
-                                              eval_batches=eval_batches,
-                                              metrics={'accuracy': accuracy_score},
-                                              tokenizer=tokenizer)
-    #if save:
-    #    with open('{}/hyperpar_{}.json'.format(location, out), 'w') as f:
-    #        json.dump(hyperpar, f)
-    #    pd.DataFrame(results_eval).to_csv('{}/{}.csv'.format(location, out))
-    #    results_df.to_csv('{}/{}_classification.csv'.format(location, out))
+    results_df = utils.predict(model, val_dl, 
+                               eval_batches=eval_batches,
+                               tokenizer=tokenizer)
+    if save:
+        with open('{}/hyperpar_{}.json'.format(results_location, out), 'w') as f:
+            json.dump(hyperpar, f)
+        #pd.DataFrame(results_eval).to_csv('{}/{}.csv'.format(location, out))
+        results_df.to_csv('{}/{}_prediction.csv'.format(results_location, out))
 
 # ==========
 

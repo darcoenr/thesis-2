@@ -629,7 +629,53 @@ def evaluate_test(model, eval_dl,
         'labels': labels
     })
 
+def infer_batch_predict(model, batch, *, tokenizer, device):
+    """
+    Infer the results of model on a single batch.
+      
+    If the model is in training mode, then compute the loss,
+    perform backpropagation and perform ad change the parameters.
+    Otherwise just compute the metrics.
+    """
 
+    pair_ids, inputs, _ = batch[0], batch[1], batch[2]
+    
+    # Tokenize the inputs
+    input_dict = tokenize_inputs(inputs, tokenizer, device=device)
+
+    # Compute model output
+    logits = model(**input_dict)
+
+    return pair_ids, logits
+
+def predict(model, eval_dl, *, eval_batches=None, **kwargs):
+    if eval_batches is None:
+        eval_batches = len(eval_dl)
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = model.to(device)
+
+    print('Start evaluating...')
+    print('Number of batches: {}.'.format(len(eval_dl)))
+    print('Select only the first {} batches'.format(eval_batches))
+    print('Model: {}'.format(type(model).__name__))
+    print('Device detected: {}'.format(device))
+    
+    classification_results = {'pair_id': [], 'prediction': [], 'label': []}
+
+    model.eval()
+    with torch.no_grad():
+        for i, batch in tqdm(enumerate(eval_dl), total=eval_batches):
+            if i == eval_batches: break
+            pair_id, pred = infer_batch_predict(model, batch, device=device,**kwargs)
+            
+            classification_results['pair_id'].append(pair_id.to('cpu'))
+            classification_results['prediction'].append(pred.to('cpu'))
+    
+    classification_results['pair_id'] = np.concatenate(classification_results['pair_id'])
+    classification_results['prediction'] = np.concatenate(classification_results['prediction'])
+    
+    return pd.DataFrame(classification_results)
         
         
             
