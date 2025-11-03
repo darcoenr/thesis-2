@@ -40,7 +40,7 @@ def generate_parser(parser):
 
     return parser
 
-def evaluate(model_location,
+def predict(model_location,
              data_location,
              results_location,
              batch_size, shuffle, subsample, frac, seed,
@@ -98,7 +98,7 @@ def main():
     model_checkpoint = args.model_checkpoint
     tokenizer_checkpoint = args.tokenizer_checkpoint
 
-    evaluate(name, 
+    predict(name, 
              val_data, subsample, batch_size,
              model_name, model_checkpoint, tokenizer_checkpoint, eval_batches,
              save, out)

@@ -1,7 +1,7 @@
 import torch
 import pandas as pd
 
-import utils
+import core.utils as utils
 
 from torch.utils.data import DataLoader
 

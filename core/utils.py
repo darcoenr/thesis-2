@@ -123,7 +123,7 @@ def get_dataset(location, *, subsample=None, frac=None, shuffle=False, seed=0):
     abd = AbDataset(df)
     return abd, dataset_hyperpar
 
-def get_test_dataset(location, *, subsample=None, frac=None):
+def get_test_dataset(location, *, subsample=None, frac=None, shuffle=False, seed=0):
     """Retrieve the dataset or a subsample of it."""
 
     dataset_hyperpar = {
@@ -145,6 +145,9 @@ def get_test_dataset(location, *, subsample=None, frac=None):
     if subsample is not None:
         df = df.sample(subsample)
         print('Sampled a subset of size {}'.format(len(df)))
+
+    if shuffle:
+        df = df.sample(len(df), random_state=seed)
 
     dataset_hyperpar['frac'] = frac
     dataset_hyperpar['subsample'] = subsample
@@ -546,28 +549,13 @@ def infer_batch_test(model, batch,
     input_dict_neg = tokenize_inputs(batch[-1], tokenizer, device=device)
 
     logits_pos = model(**input_dict_pos)
-    #prob_pos = nn.functional.softmax(logits_pos, dim=1)[:, 0]
-
-    #print(prob_pos)
-    
     logits_neg = model(**input_dict_neg)
-    #prob_neg = nn.functional.softmax(logits_neg, dim=1)[:, 0]
 
-    #print(prob_neg)
-
-    #scores = torch.stack([prob_pos, prob_neg], dim=1)
-    #prob = nn.functional.softmax(scores, dim=1)
-
-    #print(prob)
-    
-    #return prob
     return logits_pos, logits_neg
 
 def evaluate_test(model, eval_dl,
                   *,
-                  metrics, eval_batches=None, **kwargs):
-
-    from sklearn.metrics import roc_auc_score
+                  eval_batches=None, **kwargs):
     
     if eval_batches is None:
         eval_batches = len(eval_dl)
@@ -588,10 +576,10 @@ def evaluate_test(model, eval_dl,
     seqs_id_neg_list = []
     with torch.no_grad():
         for i, batch in tqdm(enumerate(eval_dl), total=eval_batches):
+            if i == eval_batches: break
             heavy_id, light_id_pos, light_id_neg = batch[1], batch[2], batch[3]
             seqs_id_pos_list.append((heavy_id, light_id_pos))
             seqs_id_neg_list.append((heavy_id, light_id_neg))
-            if i == eval_batches: break
             logits_pos, logits_neg = infer_batch_test(model, batch, device=device, **kwargs)
             logits_pos_list.append(logits_pos)
             logits_neg_list.append(logits_neg)
@@ -661,7 +649,7 @@ def predict(model, eval_dl, *, eval_batches=None, **kwargs):
     print('Model: {}'.format(type(model).__name__))
     print('Device detected: {}'.format(device))
     
-    classification_results = {'pair_id': [], 'prediction': [], 'label': []}
+    classification_results = {'pair_id': [], 'logit_pos': [], 'logit_neg': []}
 
     model.eval()
     with torch.no_grad():
@@ -670,10 +658,12 @@ def predict(model, eval_dl, *, eval_batches=None, **kwargs):
             pair_id, pred = infer_batch_predict(model, batch, device=device,**kwargs)
             
             classification_results['pair_id'].append(pair_id.to('cpu'))
-            classification_results['prediction'].append(pred.to('cpu'))
-    
+            classification_results['logit_pos'].append(pred[:, 0].to('cpu'))
+            classification_results['logit_neg'].append(pred[:, 1].to('cpu'))
+
     classification_results['pair_id'] = np.concatenate(classification_results['pair_id'])
-    classification_results['prediction'] = np.concatenate(classification_results['prediction'])
+    classification_results['logit_pos'] = np.concatenate(classification_results['logit_pos'])
+    classification_results['logit_neg'] = np.concatenate(classification_results['logit_neg'])
     
     return pd.DataFrame(classification_results)
         

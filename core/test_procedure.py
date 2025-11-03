@@ -40,23 +40,20 @@ def generate_parser(parser):
 
     return parser
 
-def evaluate(model_location,
+def test_procedure(model_location,
              data_location,
              results_location,
              batch_size, shuffle, subsample, frac, seed,
              model_name, model_checkpoint, tokenizer_checkpoint, eval_batches,
              save, out):
-    
-    #location = r'../results/classification/{}/'.format(name)
-    #ocation = re
-    
+        
     # Create results directory
     utils.create_dir_if_not_exists(results_location)
     print('Results location: {}'.format(results_location))
 
     # Get the data
     print('Retrieving the dataset...')
-    val_ds, hyperpar = utils.get_dataset(data_location, 
+    val_ds, hyperpar = utils.get_test_dataset(data_location, 
                                          shuffle=shuffle, subsample=subsample, frac=frac, seed=seed)
     val_dl = DataLoader(val_ds, batch_size=batch_size)
 
@@ -71,17 +68,14 @@ def evaluate(model_location,
     if tokenizer_checkpoint is None: tokenizer_checkpoint = model_checkpoint
     tokenizer = utils.retrieve_tokenizer(tokenizer_checkpoint)
 
-    criterion = nn.CrossEntropyLoss()
-
-    results_eval, results_df = utils.evaluate(model, criterion, val_dl, 
-                                              eval_batches=eval_batches,
-                                              metrics={'accuracy': accuracy_score},
-                                              tokenizer=tokenizer)
+    results_df = utils.evaluate_test(model, val_dl, 
+                               eval_batches=eval_batches,
+                               tokenizer=tokenizer)
     if save:
         with open('{}/hyperpar_{}.json'.format(results_location, out), 'w') as f:
             json.dump(hyperpar, f)
-        pd.DataFrame(results_eval).to_csv('{}/{}.csv'.format(results_location, out))
-        results_df.to_csv('{}/{}_classification.csv'.format(results_location, out))
+        #pd.DataFrame(results_eval).to_csv('{}/{}.csv'.format(location, out))
+        results_df.to_csv('{}/{}_prediction.csv'.format(results_location, out))
 
 # ==========
 
@@ -104,7 +98,7 @@ def main():
     model_checkpoint = args.model_checkpoint
     tokenizer_checkpoint = args.tokenizer_checkpoint
 
-    evaluate(name, 
+    test_procedure(name, 
              val_data, subsample, batch_size,
              model_name, model_checkpoint, tokenizer_checkpoint, eval_batches,
              save, out)
