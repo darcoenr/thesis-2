@@ -1,5 +1,4 @@
 # Germline-aware deep learning models and benchmarks for predicting antibody VH–VL pairing
-Repository under construction. Switch to develop to access the code.
 
 # Data availability
 
@@ -30,3 +29,5 @@ Each of **`germline_all`**, **`germline_v`** and **`random`** contains the direc
 Download a set of OAS paired data chunk and store them into a repository. To generate the three datasets
 
 # Model usage
+
+Consult the example.ipynb notebook.
